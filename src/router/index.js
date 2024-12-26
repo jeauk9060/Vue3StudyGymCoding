@@ -4,6 +4,7 @@ import PostCreateView from '@/views/posts/PostCreateView.vue';
 import PostDetailView from '@/views/posts/PostDetailView.vue';
 import PostEditView from '@/views/posts/PostEditView.vue';
 import PostListView from '@/views/posts/PostListView.vue';
+import NotFoundView from '@/views/NotFoundView.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
@@ -19,19 +20,28 @@ const routes = [
   },
   {
     path: '/posts',
+    name: 'PostList',
     component: PostListView,
   },
   {
     path: '/posts/create',
+    name: 'PostCreate',
     component: PostCreateView,
   },
   {
     path: '/posts/:id',
+    name: 'PostDetail',
     component: PostDetailView,
   },
   {
     path: '/posts/:id/edit',
+    name: 'PostEdit',
     component: PostEditView,
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFoundView,
   },
 ];
 
