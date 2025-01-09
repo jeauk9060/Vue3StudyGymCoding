@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>제목</h2>
+    <h2>{{ form.title }}</h2>
     <p>내용</p>
     <div class="text-muted">2020-01-01</div>
     <div class="my-4">
