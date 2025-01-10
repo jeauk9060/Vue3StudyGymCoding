@@ -15,7 +15,7 @@ export function createPost(post) {
 }
 
 export function updatePost(id, post) {
-  return axios.put(BackDomain + `/posts/${id}/edit`, post);
+  return axios.put(BackDomain + `/posts/${id}`, post);
 }
 
 export function deletePost(id) {

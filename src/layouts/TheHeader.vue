@@ -38,12 +38,14 @@
             </li>
           </ul>
           <div class="d-flex" role="search">
-            <button
-              class="btn btn-outline-success"
-              type="button"
-              @click="goPage"
-            >
-              글쓰기
+            <button class="btn btn-outline-light" type="button" @click="goPage">
+              <RouterLink
+                class="nav-link"
+                active-class="active"
+                to="/posts/create"
+              >
+                글쓰기
+              </RouterLink>
             </button>
           </div>
         </div>

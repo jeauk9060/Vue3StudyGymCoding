@@ -50,13 +50,10 @@ const form = ref({
   content: null,
 });
 
-const save = () => {
+const save = async () => {
   try {
-    createPost({
-      ...form.value,
-      createAt: Date.now(),
-    });
-    router.push({ name: 'PostList' });
+    await createPost(form.value);
+    goListPage();
   } catch (error) {
     console.error(error);
   }
