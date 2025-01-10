@@ -18,13 +18,8 @@
     </div>
     <nav class="mt-5" aria-label="Page navigation example">
       <ul class="pagination justify-content-center">
-        <li class="page-item" :class="{ disabled: currentPage === 1 }">
-          <a
-            class="page-link"
-            href="#"
-            aria-label="Previous"
-            @click.prevent="changePage(currentPage - 1)"
-          >
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
@@ -34,23 +29,18 @@
           class="page-item"
           :class="{ active: currentPage === page }"
         >
-          <a class="page-link" href="#" @click.prevent="changePage(page)">
-            {{ page }}
-          </a>
-        </li>
-        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-          <a
-            class="page-link"
-            href="#"
-            aria-label="Next"
-            @click.prevent="changePage(currentPage + 1)"
+          <!-- 이쪽 부분 뜯어서 고치기 -->
+          <a class="page-link" href="#" @click.prevent="currentPage()">
+            {{ page }}</a
           >
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>
       </ul>
     </nav>
-
     <hr class="my-5" />
     <AppCard> </AppCard>
   </div>
@@ -67,11 +57,11 @@ import { getPosts } from '@/api/posts';
 
 const router = useRouter();
 const totalCount = computed(() => data.value.totalCount);
-const currentPage = ref(0);
+const currentPage = ref(1);
 const totalPages = computed(() => data.value.totalPages);
 const posts = computed(() => data.value.posts);
 const data = ref();
-
+// 이거 뜯어서 고치기
 const fetchPosts = async () => {
   try {
     const response = await getPosts();
@@ -82,7 +72,7 @@ const fetchPosts = async () => {
     console.error(error);
   }
 };
-
+// 이거 뜯어서 고치기
 onBeforeMount(() => {
   fetchPosts();
 });
