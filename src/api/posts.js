@@ -2,8 +2,8 @@ import axios from 'axios';
 
 const BackDomain = 'http://localhost:8080';
 
-export function getPosts() {
-  return axios.get(BackDomain + '/posts');
+export function getPosts(params) {
+  return axios.get(BackDomain + '/posts', { params });
 }
 
 export function getPostById(id) {

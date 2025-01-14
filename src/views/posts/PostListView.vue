@@ -2,10 +2,23 @@
   <div>
     <h2>게시글 목록</h2>
     <hr class="my-4" />
+    <form @submit.prevent>
+      <div class="row g-3">
+        <div class="col-12 mb-3">
+          <input
+            v-model="searchKeyword"
+            type="text"
+            class="form-control"
+            placeholder="제목으로 검색"
+          />
+          <button class="btn btn-primary mt-2" @click="searchPosts">
+            검색
+          </button>
+        </div>
+      </div>
+    </form>
+    <hr class="my-4" />
     <div class="row g-3">
-      <p>{{ totalPages }}</p>
-      <p>{{ totalCount }}</p>
-      <p>{{ currentPage }}</p>
       <!-- 게시글 목록 반복 출력 -->
       <div v-for="post in posts" :key="post.id" class="col-4">
         <PostItem
@@ -16,10 +29,15 @@
         ></PostItem>
       </div>
     </div>
-    <nav class="mt-5" aria-label="Page navigation example">
+    <!-- <nav class="mt-5" aria-label="Page navigation example">
       <ul class="pagination justify-content-center">
-        <li class="page-item">
-          <a class="page-link" href="#" aria-label="Previous">
+        <li class="page-item" :class="{ disabled: currentPage === 1 }">
+          <a
+            class="page-link"
+            href="#"
+            aria-label="Previous"
+            @click.prevent="changePage(currentPage - 1)"
+          >
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
@@ -29,18 +47,29 @@
           class="page-item"
           :class="{ active: currentPage === page }"
         >
-          <!-- 이쪽 부분 뜯어서 고치기 -->
-          <a class="page-link" href="#" @click.prevent="currentPage()">
-            {{ page }}</a
-          >
+          <a class="page-link" href="#" @click.prevent="changePage(page)">
+            {{ page }}
+          </a>
         </li>
-        <li class="page-item">
-          <a class="page-link" href="#" aria-label="Next">
+        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+          <a
+            class="page-link"
+            href="#"
+            aria-label="Next"
+            @click.prevent="changePage(currentPage + 1)"
+          >
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>
       </ul>
-    </nav>
+    </nav> -->
+
+    <AppPagnation
+      :current-page="currentPage"
+      :total-pages="totalPages"
+      @page="page => (currentPage.value = page)"
+    />
+
     <hr class="my-5" />
     <AppCard> </AppCard>
   </div>
@@ -50,34 +79,28 @@
 import { computed, onBeforeMount, ref } from 'vue';
 import PostItem from '@/components/posts/PostItem.vue';
 import AppCard from '@/components/AppCard.vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { getPosts } from '@/api/posts';
-
-// API 파일에서 함수 가져오기
+import AppPagnation from '@/components/AppPagnation.vue';
 
 const router = useRouter();
-const totalCount = computed(() => data.value.totalCount);
-const currentPage = ref(1);
-const totalPages = computed(() => data.value.totalPages);
-const posts = computed(() => data.value.posts);
-const data = ref();
-// 이거 뜯어서 고치기
+const route = useRoute();
+
+const currentPage = ref(parseInt(route.query.page) || 1); // URL 쿼리에서 초기 페이지 값 가져오기
+const data = ref({});
+const totalPages = computed(() => data.value.totalPages || 0);
+const posts = computed(() => data.value.posts || []);
+
 const fetchPosts = async () => {
   try {
-    const response = await getPosts();
+    const response = await getPosts({ page: currentPage.value }); // API 호출
     data.value = response.data;
-    currentPage.value = response.data.currentPage;
-    console.log(response.data);
   } catch (error) {
     console.error(error);
   }
 };
-// 이거 뜯어서 고치기
-onBeforeMount(() => {
-  fetchPosts();
-});
 
-// 날짜 형식 변환 함수
+// 날짜 형식 변환
 const formatDate = dateString => {
   const options = {
     year: 'numeric',
@@ -89,13 +112,15 @@ const formatDate = dateString => {
   return new Date(dateString).toLocaleString(undefined, options);
 };
 
-// 상세 페이지 이동 함수
+// 상세 페이지 이동
 const goPage = id => {
   router.push({
     name: 'PostDetail',
-    params: {
-      id,
-    },
+    params: { id },
   });
 };
+
+onBeforeMount(() => {
+  fetchPosts();
+});
 </script>
